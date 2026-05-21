@@ -1,0 +1,55 @@
+{
+    "name": "webshr/wp-update-sdk",
+    "type": "library",
+    "description": "Composer-first WordPress update SDK for the Webshr update server.",
+    "keywords": [
+        "wordpress",
+        "updates",
+        "plugin updates",
+        "theme updates"
+    ],
+    "homepage": "https://github.com/webshr/wp-update-sdk/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Henrik Liebel",
+            "email": "hello@webshore.eu",
+            "homepage": "https://webshore.eu"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webshr\\WpUpdateSdk\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webshr\\WpUpdateSdk\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "check": [
+            "@lint",
+            "composer validate --strict"
+        ]
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+        "wp-phpunit/wp-phpunit": "^6.9",
+        "mockery/mockery": "^1.6",
+        "yoast/phpunit-polyfills": "^4.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

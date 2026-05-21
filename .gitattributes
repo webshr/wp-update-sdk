@@ -1,0 +1,13 @@
+# All files are checked into the repo with LF
+* text=auto eol=lf
+
+# These files are checked out using CRLF locally
+*.bat eol=crlf
+
+/.gitignore export-ignore
+/.distignore export-ignore
+/.editorconfig export-ignore
+/.wp-env.json export-ignore
+/phpunit.xml export-ignore
+/phpcs.xml export-ignore
+/tests export-ignore
