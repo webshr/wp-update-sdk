@@ -30,15 +30,36 @@ final class LicenseTest extends TestCase {
             ),
         ];
 
-        $updater = new Updater( 'my-plugin', 'https://updates.example.com' );
+        $updater = new Updater( 'my-plugin', 'https://updates.example.com', [ 'version' => '1.0.0' ] );
         $result  = $updater->license()->activate( 'abc123', 'https://example.com' );
 
         $this->assertIsArray( $result );
         $this->assertSame( 'activation-123', $result['activation_id'] );
         $this->assertSame( 'https://updates.example.com/license/my-plugin/activate', $GLOBALS['wp_update_sdk_last_request']['url'] );
         $this->assertSame( 'POST', $GLOBALS['wp_update_sdk_last_request']['args']['method'] );
-        $this->assertSame( '{"license_key":"abc123","site_url":"https:\/\/example.com"}', $GLOBALS['wp_update_sdk_last_request']['args']['body'] );
+        $this->assertSame( '{"license_key":"abc123","site_url":"https:\/\/example.com","installed_version":"1.0.0"}', $GLOBALS['wp_update_sdk_last_request']['args']['body'] );
         $this->assertTrue( $updater->license()->is_active() );
+    }
+
+    public function test_deactivate_sends_installed_version_with_activation_id(): void {
+        $GLOBALS['wp_update_sdk_http_queue'][] = [
+            'response' => [ 'code' => 200 ],
+            'body'     => wp_json_encode( [ 'success' => true ] ),
+        ];
+
+        $updater = new Updater( 'my-plugin', 'https://updates.example.com', [ 'version' => '1.0.0' ] );
+        $updater->activation()->save(
+            [
+                'license_key'   => 'abc123',
+                'activation_id' => 'activation-123',
+                'site_url'      => 'https://example.com',
+            ],
+        );
+
+        $this->assertTrue( $updater->license()->deactivate() );
+        $this->assertSame( 'https://updates.example.com/license/my-plugin/deactivate', $GLOBALS['wp_update_sdk_last_request']['url'] );
+        $this->assertSame( '{"license_key":"abc123","activation_id":"activation-123","installed_version":"1.0.0"}', $GLOBALS['wp_update_sdk_last_request']['args']['body'] );
+        $this->assertSame( '', $updater->license()->license_key() );
     }
 
     public function test_set_key_stores_injected_license_without_activation(): void {
@@ -63,7 +84,7 @@ final class LicenseTest extends TestCase {
             ),
         ];
 
-        $updater = new Updater( 'my-plugin', 'https://updates.example.com' );
+        $updater = new Updater( 'my-plugin', 'https://updates.example.com', [ 'version' => '1.0.0' ] );
         $updater->activation()->save(
             [
                 'license_key'   => 'abc123',
@@ -76,7 +97,7 @@ final class LicenseTest extends TestCase {
 
         $this->assertInstanceOf( \WP_Error::class, $result );
         $this->assertSame( 'server_error', $result->get_error_code() );
-        $this->assertSame( 'https://updates.example.com/license/my-plugin/check?license_key=abc123&activation_id=activation-123&site_url=https%3A%2F%2Fexample.com', $GLOBALS['wp_update_sdk_last_request']['url'] );
+        $this->assertSame( 'https://updates.example.com/license/my-plugin/check?license_key=abc123&activation_id=activation-123&site_url=https%3A%2F%2Fexample.com&installed_version=1.0.0', $GLOBALS['wp_update_sdk_last_request']['url'] );
         $this->assertSame( 'GET', $GLOBALS['wp_update_sdk_last_request']['args']['method'] );
     }
 

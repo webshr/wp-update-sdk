@@ -58,6 +58,10 @@ final class Updater {
         return $this->option_prefix;
     }
 
+    public function version(): string {
+        return $this->version;
+    }
+
     public function set_option_prefix( string $option_prefix ): void {
         $this->option_prefix = sanitize_key( $option_prefix );
         $this->activation    = new Activation( sanitize_key( $this->option_prefix . '_' . $this->slug ) );
@@ -132,7 +136,8 @@ final class Updater {
     public function update_query_args(): array {
         $state = $this->state();
         $args  = [
-            'channel' => $this->channel(),
+            'channel'           => $this->channel(),
+            'installed_version' => $this->version,
         ];
 
         if ( ! empty( $state['license_key'] ) ) {

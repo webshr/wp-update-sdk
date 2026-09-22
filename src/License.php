@@ -36,8 +36,9 @@ final class License {
             'POST',
             $this->license_url( 'activate' ),
             [
-                'license_key' => $license_key,
-                'site_url'    => $site_url,
+                'license_key'       => $license_key,
+                'site_url'          => $site_url,
+                'installed_version' => $this->updater->version(),
             ],
         );
 
@@ -103,8 +104,9 @@ final class License {
             'POST',
             $this->license_url( 'deactivate' ),
             [
-                'license_key'   => (string) $state['license_key'],
-                'activation_id' => (string) $state['activation_id'],
+                'license_key'       => (string) $state['license_key'],
+                'activation_id'     => (string) $state['activation_id'],
+                'installed_version' => $this->updater->version(),
             ],
         );
 
@@ -131,9 +133,10 @@ final class License {
         $response = $this->updater->client()->get(
             add_query_arg(
                 [
-                    'license_key'   => (string) $state['license_key'],
-                    'activation_id' => (string) ( $state['activation_id'] ?? '' ),
-                    'site_url'      => (string) ( $state['site_url'] ?? $this->updater->site_url() ),
+                    'license_key'       => (string) $state['license_key'],
+                    'activation_id'     => (string) ( $state['activation_id'] ?? '' ),
+                    'site_url'          => (string) ( $state['site_url'] ?? $this->updater->site_url() ),
+                    'installed_version' => $this->updater->version(),
                 ],
                 $this->license_url( 'check' ),
             ),

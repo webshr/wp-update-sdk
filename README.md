@@ -122,6 +122,8 @@ $updater->license()->check();
 $updater->license()->deactivate();
 ```
 
+Every license request (`activate`, `deactivate`, `check`) also sends `installed_version`, taken from the `version` constructor argument, so the update server can log which release each site runs.
+
 ## Settings Page
 
 The SDK page includes:
@@ -166,10 +168,11 @@ $updater->set_channel( 'beta' );
 echo $updater->metadata_url();
 ```
 
-Without an activated license, metadata requests include only the channel:
+Without an activated license, metadata requests include the channel and the installed version:
 
 ```text
 channel
+installed_version
 ```
 
 After a license is activated, metadata requests also include:

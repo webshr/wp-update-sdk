@@ -34,10 +34,10 @@ final class UpdaterFacadeTest extends TestCase {
     }
 
     public function test_metadata_url_only_includes_license_values_after_activation(): void {
-        $updater = new Updater( 'my-plugin', 'https://updates.example.com' );
+        $updater = new Updater( 'my-plugin', 'https://updates.example.com', [ 'version' => '1.0.0' ] );
 
         $this->assertSame(
-            'https://updates.example.com/metadata/my-plugin?channel=stable',
+            'https://updates.example.com/metadata/my-plugin?channel=stable&installed_version=1.0.0',
             $updater->metadata_url(),
         );
 
@@ -51,7 +51,7 @@ final class UpdaterFacadeTest extends TestCase {
         );
 
         $this->assertSame(
-            'https://updates.example.com/metadata/my-plugin?channel=beta&license_key=abc123&activation_id=activation-123&site_url=https%3A%2F%2Fexample.com',
+            'https://updates.example.com/metadata/my-plugin?channel=beta&installed_version=1.0.0&license_key=abc123&activation_id=activation-123&site_url=https%3A%2F%2Fexample.com',
             $updater->metadata_url(),
         );
     }
